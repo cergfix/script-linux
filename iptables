@@ -1,0 +1,34 @@
+#!/bin/sh
+iptables -F
+iptables -t nat -F
+iptables -t mangle -F
+iptables -t nat -P PREROUTING ACCEPT
+iptables -X
+
+iptables -A FORWARD -i tun101 -o eth0 -j ACCEPT
+iptables -A FORWARD -i eth0 -o tun101 -j ACCEPT
+iptables -A FORWARD -i tun102 -o eth0 -j ACCEPT
+iptables -A FORWARD -i eth0 -o tun102 -j ACCEPT
+
+iptables -A FORWARD -i tun1 -o eth0 -j ACCEPT
+iptables -A FORWARD -i eth0 -o tun1 -j ACCEPT
+
+iptables -A FORWARD -i tun2 -o eth0 -j ACCEPT
+iptables -A FORWARD -i eth0 -o tun2 -j ACCEPT
+
+iptables -A FORWARD -i tun3 -o eth0 -j ACCEPT
+iptables -A FORWARD -i eth0 -o tun3 -j ACCEPT
+
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o tun101 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o tun102 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o tun1 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o tun2 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o tun3 -j MASQUERADE
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+iptables -t nat -A PREROUTING -s 10.240.0.0/16 -p tcp -i eth0 --dport 3306 -j DNAT --to-destination 192.168.0.100:3306
+iptables -t nat -A PREROUTING -s 10.200.0.0/16 -p tcp -i eth0 --dport 3306 -j DNAT --to-destination 192.168.0.100:3306
+
+iptables -A FORWARD -p tcp -d 192.168.0.100 --dport 3306 -j ACCEPT
