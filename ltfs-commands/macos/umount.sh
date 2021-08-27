@@ -18,5 +18,3 @@ fi
 sudo umount ${MOUNT_POINT}
 
 exit 0
-
-

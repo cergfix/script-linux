@@ -9,13 +9,6 @@ if [[ "${MOUNT_POINT}" = "" ]]; then
     exit 1
 fi
 
-if [[ ! -d "${MOUNT_POINT}" ]]; then
-    echo "Creating mount point [${MOUNT_POINT}] .."
-    sudo mkdir -pv ${MOUNT_POINT}
-fi
-
 sudo ltfs ${MOUNT_POINT} -o eject
 
 exit 0
-
-

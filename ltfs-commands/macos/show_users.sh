@@ -18,5 +18,3 @@ fi
 fuser -cu ${MOUNT_POINT}
 
 exit 0
-
-
